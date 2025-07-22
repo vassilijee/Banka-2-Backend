@@ -223,7 +223,7 @@ public class OrderRealtimeProcessor(
         var orderList = executeQuoteOrders.SelectMany(quoteOrders => quoteOrders.orders)
                                           .ToList();
 
-        foreach (var orderEntry in orderList)
+        foreach (var orderEntry in orderList.Where(order => order.Direction is Direction.Sell))
             orderAssetDictionary.Add(orderEntry.Id,
                                      assetList.First(asset => asset.ActuaryId == accountActuaryDictionary[orderEntry.AccountId] && asset.SecurityId == orderEntry.SecurityId));
         

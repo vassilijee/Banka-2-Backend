@@ -69,51 +69,51 @@ public class DatabaseBackgroundService(
 
             return;
         }
-        
+
         m_RedisRepository.Clear();
 
         m_Logger.LogInformation("Persistent Seeding | Start");
         m_Logger.LogInformation("Persistent Seeding | Security | Stock Exchange | Start");
-        
+
         Context.SeedStockExchanges()
                .Wait();
 
         m_Logger.LogInformation("Persistent Seeding | Security | Stock Exchange | Complete");
         m_Logger.LogInformation("Persistent Seeding | Security & Quotes | Future Contract | Start");
-        
+
         Context.SeedFutureContractsAndQuotes(m_SecurityRepository, m_QuoteRepository)
                .Wait();
-        
+
         m_Logger.LogInformation("Persistent Seeding | Security & Quotes | Future Contract | Complete");
         m_Logger.LogInformation("Persistent Seeding | Security | Stock | Start");
-        
+
         Context.SeedStock(client)
                .Wait();
-        
+
         m_Logger.LogInformation("Persistent Seeding | Security | Stock | Complete");
         m_Logger.LogInformation("Persistent Seeding | Security | ForexPair | Start");
-        
+
         Context.SeedForexPair(client, m_UserServiceHttpClient, m_SecurityRepository)
                .Wait();
 
         m_Logger.LogInformation("Persistent Seeding | Security | ForexPair | Complete");
         m_Logger.LogInformation("Persistent Seeding | Security & Quotes | Options | Start");
-        
+
         Context.SeedOptionsAndQuotes(client, m_SecurityRepository, m_QuoteRepository)
                .Wait();
 
         m_Logger.LogInformation("Persistent Seeding | Security & Quotes | Options  | Complete");
         m_Logger.LogInformation("Persistent Seeding | Quotes | ForexPair | Start");
-        
+
         Context.SeedForexPairQuotes(client, m_UserServiceHttpClient, m_SecurityRepository, m_QuoteRepository)
                .Wait();
 
         m_Logger.LogInformation("Persistent Seeding | Quotes | ForexPair | Complete");
         m_Logger.LogInformation("Persistent Seeding | Quotes | Stock | Start");
-        
+
         Context.SeedStockQuotes(client, m_SecurityRepository, m_QuoteRepository)
                .Wait();
-        
+
         m_Logger.LogInformation("Persistent Seeding | Quotes | Stock | Complete");
         m_Logger.LogInformation("Persistent Seeding | Complete");
     }

@@ -9,9 +9,9 @@ public static class AssetMapper
     {
         return new AssetResponse
                {
-                   Id      = asset.Id,
-                   Actuary = actuary,
-                   // TODO    Security = asset.Security!.ToResponse();
+                   Id           = asset.Id,
+                   Actuary      = actuary,
+                   Security     = asset.Security!.ToSecuritySimpleResponse(),
                    Quantity     = asset.Quantity,
                    AveragePrice = asset.AveragePrice,
                    CreatedAt    = asset.CreatedAt,
