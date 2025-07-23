@@ -102,7 +102,8 @@ public class TransactionService(
         var page = await m_TransactionRepository.FindAllByAccountId(accountId, transactionFilterQuery, pageable);
 
         if (authorizationService.Permissions == Permission.Client &&
-            page.Items.Any(transaction => transaction.FromAccount!.ClientId != authorizationService.UserId && transaction.ToAccount!.ClientId != authorizationService.UserId))
+            page.Items.Any(transaction => (transaction.FromAccount is null || transaction.FromAccount.ClientId != authorizationService.UserId) &&
+                                          (transaction.ToAccount is null   || transaction.ToAccount.ClientId   != authorizationService.UserId)))
             return Result.Forbidden<Page<TransactionResponse>>();
 
         var transactionResponses = page.Items.Select(transaction => transaction.ToResponse())
@@ -136,6 +137,10 @@ public class TransactionService(
     public async Task<Result<Transaction>> CreateTransaction(TransactionCreateRequest createTransaction)
     {
         var authorizationService = m_AuthorizationServiceFactory.AuthorizationService;
+
+        Console.WriteLine(Configuration.Application.Profile == Profile.Production);
+        Console.WriteLine(authorizationService.Permissions  != Permission.Bank);
+        Console.WriteLine(!authorizationService.IsConfirmationCodeValid(createTransaction.ConfirmationCode));
 
         if (Configuration.Application.Profile == Profile.Production && authorizationService.Permissions != Permission.Bank &&
             !authorizationService.IsConfirmationCodeValid(createTransaction.ConfirmationCode))
