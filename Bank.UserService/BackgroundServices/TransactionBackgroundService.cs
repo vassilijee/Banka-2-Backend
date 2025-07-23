@@ -23,13 +23,11 @@ public class TransactionBackgroundService(ITransactionService transactionService
         if (Configuration.Application.Profile == Profile.Testing)
             return;
 
-        return;
-
         m_InternalTimer = new Timer(service => ProcessInternalTransactions(service)
-                                    .Wait(), this, TimeSpan.Zero, TimeSpan.FromSeconds(15));
+                                    .Wait(), this, TimeSpan.Zero, TimeSpan.FromSeconds(30));
 
         m_ExternalTimer = new Timer(service => ProcessExternalTransactions(service)
-                                    .Wait(), this, TimeSpan.Zero, TimeSpan.FromMinutes(15));
+                                    .Wait(), this, TimeSpan.Zero, TimeSpan.FromMinutes(30));
     }
 
     private bool m_ProcessingInternalTransaction = false;
